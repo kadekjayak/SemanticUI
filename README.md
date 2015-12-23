@@ -1,14 +1,14 @@
 # SemanticUI plugin for CakePHP
+This is Semantic UI plugin for CakePhp, it contain Theme for Bake, modified component and Helper.
 
 ## Installation
-
 Download and extract it into plugin directory on cakephp.
 and load plugin on bootstrap
 
 	Plugin::load('SemanticUI', ['bootstrap' => false, 'routes' => true]);
 
 ##Requirements
-* CakePHP 3.1+
+* CakePHP 3+
 
 
 ## Example
@@ -31,7 +31,7 @@ and use the layout that included from plugin, for example change on your `src/Co
     }
 
 
-to get the Input form Styled you should use Form Helper on this plugin, you can use Form helper on this plugin by using `className` options on `src/View/AppView.php`
+to get the Input form Styled you should use Form Helper on this plugin, you can use Form helper on this plugin by passing `className` options when loading `FormHelper` on your `src/View/AppView.php`
 
 	public function initialize()
     {
