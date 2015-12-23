@@ -41,3 +41,5 @@ to get the Input form Styled you should use Form Helper on this plugin, you can 
 
 ##Notes
 The `View` method may not get styled yet.
+
+for more info about Semantic UI open their official website on : http://semantic-ui.com/
