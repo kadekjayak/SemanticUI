@@ -14,7 +14,9 @@ and load plugin on bootstrap
 ## Example
 ### Using Theme for Bake
 you can bake with Semantic UI theme by using `--theme` options, you can use the command below on terminal
+
 	/bin/cake bake template all --theme SemanticUI
+
 
 and use the layout that included from plugin, for example change on your `src/Controller/AppController.php`. (actualy i din't know if it's the correct way)
 
@@ -35,6 +37,7 @@ to get the Input form Styled you should use Form Helper on this plugin, you can 
     {
         $this->loadHelper('Form', ['className' => 'SemanticUI.SemanticForm']);
     }
+
 
 ##Notes
 The `View` method may not get styled yet.
