@@ -25,48 +25,14 @@ if (isset($modelObject) && $modelObject->behaviors()->has('Tree')) {
     });
 }
 %>
-<div class="ui pageHeader vertical segment">
-    <div class="ui container">
-        <div class="introduction">
-            <h1 class="ui header"><?= __('<%= $pluralHumanName %>') ?></h1>
-        </div>
+<div class="ui grid">
+    <div class="four wide column">
+        <?= $this->SemanticMenu->render($TreeMenu); ?>
     </div>
-</div>
-<div class="ui main container">
-    <div class="ui grid stackable">
-        <div class="four wide column" id="actions-sidebar">
-            <div class="ui vertical pointing menu fluid" id="actions-sidebar">
-        <% if (strpos($action, 'add') === false): %>
-                <?= $this->Form->postLink(
-                        __('<i class="minus icon"></i> Delete'),
-                        ['action' => 'delete', $<%= $singularVar %>-><%= $primaryKey[0] %>],
-                        [
-                            'confirm' => __('Are you sure you want to delete # {0}?', $<%= $singularVar %>-><%= $primaryKey[0] %>),
-                            'escape' => false,
-                            'class' => 'item'
-                        ]
-                    )
-                ?>
-        <% endif; %>
-                <?= $this->Html->link(__('<i class="list icon"></i> List <%= $pluralHumanName %>'), ['action' => 'index'], ['escape' => false, 'class' => 'item']) ?>
-                <%
-                        $done = [];
-                        foreach ($associations as $type => $data) {
-                            foreach ($data as $alias => $details) {
-                                if ($details['controller'] !== $this->name && !in_array($details['controller'], $done)) {
-                %>
-                        <?= $this->Html->link(__('<i class="list icon"></i> List <%= $this->_pluralHumanName($alias) %>'), ['controller' => '<%= $details['controller'] %>', 'action' => 'index'], ['class' => 'item', 'escape' => false]) %>
-                        <?= $this->Html->link(__('<i class="plus icon"></i> New <%= $this->_singularHumanName($alias) %>'), ['controller' => '<%= $details['controller'] %>', 'action' => 'add'], ['class' => 'item', 'escape' => false]) %>
-                <%
-                                    $done[] = $details['controller'];
-                                }
-                            }
-                        }
-                %>
-            </div>
-        </div>
-        <div class="twelve wide column <%= $pluralVar %> content">
-            <?= $this->Flash->render() ?>
+    <div class="twelve wide column <%= $pluralVar %>">
+        <h1 class="ui header"><?php echo $title_for_layout; ?></h1>
+
+        <?= $this->Flash->render() ?>
             <?= $this->Form->create($<%= $singularVar %>) ?>
                 
                     <h4 class="ui dividing header"><?= __('<%= Inflector::humanize($action) %> <%= $singularHumanName %>') ?></h4>
@@ -114,6 +80,6 @@ if (isset($modelObject) && $modelObject->behaviors()->has('Tree')) {
                 
                 <?= $this->Form->button(__('Submit')) ?>
                 <?= $this->Form->end() ?>
-        </div>
+
     </div>
 </div>

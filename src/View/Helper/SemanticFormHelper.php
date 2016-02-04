@@ -46,13 +46,13 @@ class SemanticFormHelper extends FormHelper
             'decimal' => 'number', 'binary' => 'file', 'uuid' => 'string'
         ],
         'templates' => [
-            'button' => '<button{{attrs}}>{{text}}</button>',
+            'button' => '<button class="ui primary left floated button" {{attrs}}>{{text}}</button>',
             'checkbox' => '<input type="checkbox" name="{{name}}" value="{{value}}"{{attrs}}>',
             'checkboxFormGroup' => '{{label}}',
             'checkboxWrapper' => '<div class="checkbox">{{label}}</div>',
             'dateWidget' => '{{year}}{{month}}{{day}}{{hour}}{{minute}}{{second}}{{meridian}}',
-            'error' => '<div class="ui error message">{{content}}</div>',
-            'errorList' => '<ul>{{content}}</ul>',
+            'error' => '<div class="ui message">{{content}}</div>',
+            'errorList' => '<ul class="list">{{content}}</ul>',
             'errorItem' => '<li>{{text}}</li>',
             'file' => '<input type="file" name="{{name}}"{{attrs}}>',
             'fieldset' => '<fieldset{{attrs}}>{{content}}</fieldset>',
@@ -61,9 +61,9 @@ class SemanticFormHelper extends FormHelper
             'formGroup' => '{{label}}{{input}}',
             'hiddenBlock' => '<div style="display:none;">{{content}}</div>',
             'input' => '<input type="{{type}}" name="{{name}}"{{attrs}}/>',
-            'inputSubmit' => '<input type="{{type}}"{{attrs}}/>',
-            'inputContainer' => '<div class="input field {{type}}{{required}}">{{content}}</div>',
-            'inputContainerError' => '<div class="input {{type}}{{required}} error">{{content}}{{error}}</div>',
+            'inputSubmit' => '<button type="{{type}}"{{attrs}}>{{caption}}</button>',
+            'inputContainer' => '<div class="field {{type}}{{required}}">{{content}}</div>',
+            'inputContainerError' => '<div class="field {{type}}{{required}} error">{{content}}{{error}}</div>',
             'label' => '<label{{attrs}}>{{text}}</label>',
             'nestingLabel' => '{{hidden}}<label{{attrs}}>{{input}}{{text}}</label>',
             'legend' => '<legend>{{text}}</legend>',
@@ -78,12 +78,6 @@ class SemanticFormHelper extends FormHelper
         ]
     ];
 
-
-
-    /**
-    * @ Override
-    *
-    **/
     public function create($model = null, array $options = [])
     {
         $append = '';
@@ -104,7 +98,7 @@ class SemanticFormHelper extends FormHelper
             'encoding' => strtolower(Configure::read('App.encoding')),
             'templates' => null,
             'idPrefix' => null,
-            'class' => "ui form"
+            'class' => 'ui form'
         ];
 
         if ($options['idPrefix'] !== null) {
@@ -180,119 +174,9 @@ class SemanticFormHelper extends FormHelper
         ]) . $append;
     }
 
-     public function button($title, array $options = [])
-    {
-        $options += ['type' => 'submit', 'escape' => false, 'secure' => false];
-        $options['text'] = $title;
-        $options['class'] = 'ui button';
-        return $this->widget('button', $options);
-    }
-
-    public function input($fieldName, array $options = [])
-    {
-        $options += [
-            'type' => null,
-            'label' => null,
-            'error' => null,
-            'required' => null,
-            'options' => null,
-            'templates' => [],
-            'templateVars' => [],
-            'class' => 'field'
-        ];
-        $options = $this->_parseOptions($fieldName, $options);
-        $options += ['id' => $this->_domId($fieldName)];
-
-        $templater = $this->templater();
-        $newTemplates = $options['templates'];
-
-        if ($newTemplates) {
-            $templater->push();
-            $templateMethod = is_string($options['templates']) ? 'load' : 'add';
-            $templater->{$templateMethod}($options['templates']);
-        }
-        unset($options['templates']);
-
-        $error = null;
-        $errorSuffix = '';
-        if ($options['type'] !== 'hidden' && $options['error'] !== false) {
-            $error = $this->error($fieldName, $options['error']);
-            $errorSuffix = empty($error) ? '' : 'Error';
-            unset($options['error']);
-        }
-
-        $label = $options['label'];
-        unset($options['label']);
-
-        $nestedInput = false;
-        if ($options['type'] === 'checkbox') {
-            $nestedInput = true;
-        }
-        $nestedInput = isset($options['nestedInput']) ? $options['nestedInput'] : $nestedInput;
-
-        if ($nestedInput === true && $options['type'] === 'checkbox' && !array_key_exists('hiddenField', $options) && $label !== false) {
-            $options['hiddenField'] = '_split';
-        }
-
-        $input = $this->_getInput($fieldName, $options);
-        if ($options['type'] === 'hidden' || $options['type'] === 'submit') {
-            if ($newTemplates) {
-                $templater->pop();
-            }
-            return $input;
-        }
-
-        $label = $this->_getLabel($fieldName, compact('input', 'label', 'error', 'nestedInput') + $options);
-        $result = $this->_groupTemplate(compact('input', 'label', 'error', 'options'));
-        $result = $this->_inputContainerTemplate([
-            'content' => $result,
-            'error' => $error,
-            'errorSuffix' => $errorSuffix,
-            'options' => $options
-        ]);
-
-        if ($newTemplates) {
-            $templater->pop();
-        }
-
-        return $result;
-    }
-
-    public function checkbox($fieldName, array $options = [])
-    {
-        $options += ['hiddenField' => true, 'value' => 1];
-
-        // Work around value=>val translations.
-        $value = $options['value'];
-        unset($options['value']);
-        $options = $this->_initInputField($fieldName, $options);
-        $options['value'] = $value;
-
-        $output = '';
-        if ($options['hiddenField']) {
-            $hiddenOptions = [
-                'name' => $options['name'],
-                'value' => ($options['hiddenField'] !== true && $options['hiddenField'] !== '_split' ? $options['hiddenField'] : '0'),
-                'form' => isset($options['form']) ? $options['form'] : null,
-                'secure' => false
-            ];
-            if (isset($options['disabled']) && $options['disabled']) {
-                $hiddenOptions['disabled'] = 'disabled';
-            }
-            $output = $this->hidden($fieldName, $hiddenOptions);
-        }
-
-        if ($options['hiddenField'] === '_split') {
-            unset($options['hiddenField'], $options['type']);
-            return ['hidden' => $output, 'input' => $this->widget('checkbox', $options)];
-        }
-        unset($options['hiddenField'], $options['type']);
-        return $output . $this->widget('checkbox', $options);
-    }
 
     public function select($fieldName, $options = [], array $attributes = [])
     {
-
         $attributes += [
             'disabled' => null,
             'escape' => true,
@@ -300,6 +184,7 @@ class SemanticFormHelper extends FormHelper
             'multiple' => null,
             'secure' => true,
             'empty' => false,
+            'class' => 'ui fluid search dropdown'
         ];
 
         if ($attributes['multiple'] === 'checkbox') {
@@ -319,7 +204,7 @@ class SemanticFormHelper extends FormHelper
 
         $attributes = $this->_initInputField($fieldName, $attributes);
         $attributes['options'] = $options;
-        $attributes['class'] = 'ui dropdown';
+
         $hidden = '';
         if ($attributes['multiple'] && $attributes['hiddenField']) {
             $hiddenAttributes = [
@@ -332,6 +217,63 @@ class SemanticFormHelper extends FormHelper
         }
         unset($attributes['hiddenField'], $attributes['type']);
         return $hidden . $this->widget('select', $attributes);
+    }
+
+     public function submit($caption = null, array $options = [])
+    {
+        if (!is_string($caption) && empty($caption)) {
+            $caption = __d('cake', 'Submit');
+        }
+        $options += ['type' => 'submit', 'secure' => false];
+
+        if (isset($options['name'])) {
+            $this->_secure($options['secure'], $this->_secureFieldName($options['name']));
+        }
+        unset($options['secure']);
+
+        $isUrl = strpos($caption, '://') !== false;
+        $isImage = preg_match('/\.(jpg|jpe|jpeg|gif|png|ico)$/', $caption);
+
+        $type = $options['type'];
+        unset($options['type']);
+
+        if ($isUrl || $isImage) {
+            $unlockFields = ['x', 'y'];
+            if (isset($options['name'])) {
+                $unlockFields = [
+                    $options['name'] . '_x',
+                    $options['name'] . '_y'
+                ];
+            }
+            foreach ($unlockFields as $ignore) {
+                $this->unlockField($ignore);
+            }
+            $type = 'image';
+        }
+
+        if ($isUrl) {
+            $options['src'] = $caption;
+        } elseif ($isImage) {
+            if ($caption{0} !== '/') {
+                $url = $this->Url->webroot(Configure::read('App.imageBaseUrl') . $caption);
+            } else {
+                $url = $this->Url->webroot(trim($caption, '/'));
+            }
+            $url = $this->Url->assetTimestamp($url);
+            $options['src'] = $url;
+        } else {
+            $options['value'] = $caption;
+        }
+
+        $input = $this->formatTemplate('inputSubmit', [
+            'type' => $type,
+            'attrs' => $this->templater()->formatAttributes($options),
+            'caption' => $options['value']
+        ]);
+
+        return $this->formatTemplate('submitContainer', [
+            'content' => $input
+        ]);
     }
 
 }

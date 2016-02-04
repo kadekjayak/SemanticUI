@@ -3,11 +3,12 @@ namespace SemanticUI\View\Helper;
 
 use Cake\View\Helper;
 use Cake\View\View;
+use Cake\View\Helper\HtmlHelper;
 
 /**
- * Form helper
+ * Html helper
  */
-class FormHelper extends Helper
+class SemanticHtmlHelper extends HtmlHelper
 {
 
     /**
@@ -15,6 +16,6 @@ class FormHelper extends Helper
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    
 
 }

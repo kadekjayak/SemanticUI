@@ -26,36 +26,12 @@ if (isset($modelObject) && $modelObject->behaviors()->has('Tree')) {
     });
 }
 %>
-<div class="ui pageHeader vertical segment">
-    <div class="ui container">
-        <div class="introduction">
-            <h1 class="ui header"><?= __('<%= $pluralHumanName %>') ?></h1>
-        </div>
+<div class="ui grid">
+    <div class="four wide column">
+        <?= $this->SemanticMenu->render($TreeMenu); ?>
     </div>
-</div>
-<div class="ui main container">
-    <div class="ui grid stackable">
-        <div class="four wide column" id="actions-sidebar">
-            <div class="ui vertical pointing menu fluid" id="actions-sidebar">
-                <?= $this->Html->link(__('<i class="plus icon"></i> New <%= $singularHumanName %>'), ['action' => 'add'], ['escape' => false, 'class' => 'item']) ?>
-                <%
-                    $done = [];
-                    foreach ($associations as $type => $data):
-                        foreach ($data as $alias => $details):
-                            if (!empty($details['navLink']) && $details['controller'] !== $this->name && !in_array($details['controller'], $done)):
-                %>
-                        <?= $this->Html->link(__('<i class="list icon"></i> List <%= $this->_pluralHumanName($alias) %>'), ['controller' => '<%= $details['controller'] %>', 'action' => 'index'], ['escape' => false, 'class' => 'item']) ?>
-                        <?= $this->Html->link(__('<i class="plus icon"></i> New <%= $this->_singularHumanName($alias) %>'), ['controller' => '<%= $details['controller'] %>', 'action' => 'add'], ['escape' => false, 'class' => 'item']) ?>
-                <%
-                                $done[] = $details['controller'];
-                            endif;
-                        endforeach;
-                    endforeach;
-                %>
-            </div>
-        </div>
-        <div class="twelve wide column <%= $pluralVar %> content">
-            <?= $this->Flash->render() ?>
+    <div class="twelve wide column <%= $pluralVar %>">
+        <h1 class="ui header"><?php echo $title_for_layout; ?></h1>
             <table class="ui celled table"cellpadding="0" cellspacing="0">
                 <thead>
                     <tr>
@@ -106,14 +82,12 @@ if (isset($modelObject) && $modelObject->behaviors()->has('Tree')) {
                 </tbody>
             </table>
             <div class="paginator">
-                <ul class="pagination">
+                <div class="ui pagination menu">
                     <?= $this->Paginator->prev('< ' . __('previous')) ?>
                     <?= $this->Paginator->numbers() ?>
                     <?= $this->Paginator->next(__('next') . ' >') ?>
-                </ul>
+                </div>
                 <p><?= $this->Paginator->counter() ?></p>
             </div>
-        </div>
-
     </div>
 </div>
