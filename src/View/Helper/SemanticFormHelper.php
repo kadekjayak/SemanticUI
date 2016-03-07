@@ -49,7 +49,7 @@ class SemanticFormHelper extends FormHelper
             'button' => '<button class="ui primary left floated button" {{attrs}}>{{text}}</button>',
             'checkbox' => '<input type="checkbox" name="{{name}}" value="{{value}}"{{attrs}}>',
             'checkboxFormGroup' => '{{label}}',
-            'checkboxWrapper' => '<div class="checkbox">{{label}}</div>',
+            'checkboxWrapper' => '<div class="ui checkbox">{{label}}</div>',
             'dateWidget' => '{{year}}{{month}}{{day}}{{hour}}{{minute}}{{second}}{{meridian}}',
             'error' => '<div class="ui message">{{content}}</div>',
             'errorList' => '<ul class="list">{{content}}</ul>',
@@ -62,7 +62,7 @@ class SemanticFormHelper extends FormHelper
             'hiddenBlock' => '<div style="display:none;">{{content}}</div>',
             'input' => '<input type="{{type}}" name="{{name}}"{{attrs}}/>',
             'inputSubmit' => '<button type="{{type}}"{{attrs}}>{{caption}}</button>',
-            'inputContainer' => '<div class="field {{type}}{{required}}">{{content}}</div>',
+            'inputContainer' => '<div class="field {{type}}{{required}}">{{content}}{{tooltip}}</div>',
             'inputContainerError' => '<div class="field {{type}}{{required}} error">{{content}}{{error}}</div>',
             'label' => '<label{{attrs}}>{{text}}</label>',
             'nestingLabel' => '{{hidden}}<label{{attrs}}>{{input}}{{text}}</label>',
@@ -274,6 +274,80 @@ class SemanticFormHelper extends FormHelper
         return $this->formatTemplate('submitContainer', [
             'content' => $input
         ]);
+    }
+
+    public function input($fieldName, array $options = [])
+    {
+        $options += [
+            'type' => null,
+            'label' => null,
+            'error' => null,
+            'required' => null,
+            'options' => null,
+            'tooltip' => null,
+            'templates' => [],
+            'templateVars' => []
+        ];
+        $options = $this->_parseOptions($fieldName, $options);
+        $options += ['id' => $this->_domId($fieldName)];
+
+        $templater = $this->templater();
+        $newTemplates = $options['templates'];
+
+        if ($newTemplates) {
+            $templater->push();
+            $templateMethod = is_string($options['templates']) ? 'load' : 'add';
+            $templater->{$templateMethod}($options['templates']);
+        }
+        unset($options['templates']);
+
+        $error = null;
+        $errorSuffix = '';
+        if ($options['type'] !== 'hidden' && $options['error'] !== false) {
+            $error = $this->error($fieldName, $options['error']);
+            $errorSuffix = empty($error) ? '' : 'Error';
+            unset($options['error']);
+        }
+
+        $label = $options['label'];
+        unset($options['label']);
+
+        $nestedInput = false;
+        if ($options['type'] === 'checkbox') {
+            $nestedInput = true;
+        }
+        $nestedInput = isset($options['nestedInput']) ? $options['nestedInput'] : $nestedInput;
+
+        if ($nestedInput === true && $options['type'] === 'checkbox' && !array_key_exists('hiddenField', $options) && $label !== false) {
+            $options['hiddenField'] = '_split';
+        }
+
+        $input = $this->_getInput($fieldName, $options);
+        if ($options['type'] === 'hidden' || $options['type'] === 'submit') {
+            if ($newTemplates) {
+                $templater->pop();
+            }
+            return $input;
+        }
+        $tooltip = null;
+        if($options['tooltip']) {
+            $tooltip = '<div class="ui pointing label">' . $options['tooltip'] . '</div>';
+        }
+
+        $label = $this->_getLabel($fieldName, compact('input', 'label', 'error', 'nestedInput') + $options);
+        $result = $this->_groupTemplate(compact('input', 'label', 'error', 'options'));
+        $result = $this->_inputContainerTemplate([
+            'content' => $result,
+            'error' => $error,
+            'errorSuffix' => $errorSuffix,
+            'options' => $options,
+            'tooltip' => isset($tooltip) ? $tooltip : null
+        ]);
+        if ($newTemplates) {
+            $templater->pop();
+        }
+
+        return $result;
     }
 
 }
