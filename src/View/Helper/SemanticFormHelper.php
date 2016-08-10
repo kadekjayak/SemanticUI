@@ -46,7 +46,7 @@ class SemanticFormHelper extends FormHelper
             'decimal' => 'number', 'binary' => 'file', 'uuid' => 'string'
         ],
         'templates' => [
-            'button' => '<button class="ui primary left floated button" {{attrs}}>{{text}}</button>',
+            'button' => '<button class="ui primary left button" {{attrs}}>{{text}}</button>',
             'checkbox' => '<input type="checkbox" name="{{name}}" value="{{value}}"{{attrs}}>',
             'checkboxFormGroup' => '{{label}}',
             'checkboxWrapper' => '<div class="ui checkbox">{{label}}</div>',

@@ -53,10 +53,28 @@ $pk = "\$$singularVar->{$primaryKey[0]}";
 %>
 <div class="ui grid">
     <div class="four wide column">
-        <?= $this->SemanticMenu->render($TreeMenu); ?>
+        <div class="ui vertical text visible menu">
+            <a class="active item"><%= $singularHumanName %></a>
+            <?= $this->Html->link(__('New <%= $singularHumanName %>'), ['action' => 'add'], ['class' => 'item']) ?>
+            <%
+                $done = [];
+                foreach ($associations as $type => $data):
+                    foreach ($data as $alias => $details):
+                        if (!empty($details['navLink']) && $details['controller'] !== $this->name && !in_array($details['controller'], $done)):
+            %>
+                    <?= $this->Html->link(__('List <%= $this->_pluralHumanName($alias) %>'), ['controller' => '<%= $details['controller'] %>', 'action' => 'index'], ['class' => 'item']) ?>
+                    <?= $this->Html->link(__('New <%= $this->_singularHumanName($alias) %>'), ['controller' => '<%= $details['controller'] %>', 'action' => 'add'], ['class' => 'item']) ?>
+            <%
+                            $done[] = $details['controller'];
+                        endif;
+                    endforeach;
+                endforeach;
+            %>
+        </div>
     </div>
     <div class="twelve wide column <%= $pluralVar %>">
         <h1 class="ui header"><?php echo $title_for_layout; ?></h1>
+        <div class="ui stacked segment">
             <table class="ui definition table">
                 <% if ($groupedFields['string']) : %>
                 <% foreach ($groupedFields['string'] as $field) : %>
@@ -145,6 +163,6 @@ $pk = "\$$singularVar->{$primaryKey[0]}";
                     <?php endif; ?>
                     </div>
                 <% endforeach; %>
-        
+        </div>
     </div>
 </div>

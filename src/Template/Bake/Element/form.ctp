@@ -25,61 +25,55 @@ if (isset($modelObject) && $modelObject->behaviors()->has('Tree')) {
     });
 }
 %>
-<div class="ui grid">
-    <div class="four wide column">
-        <?= $this->SemanticMenu->render($TreeMenu); ?>
-    </div>
-    <div class="twelve wide column <%= $pluralVar %>">
-        <h1 class="ui header"><?php echo $title_for_layout; ?></h1>
-
-        <?= $this->Flash->render() ?>
-            <?= $this->Form->create($<%= $singularVar %>) ?>
-                
-                    <h4 class="ui dividing header"><?= __('<%= Inflector::humanize($action) %> <%= $singularHumanName %>') ?></h4>
-                    <?php
-            <%
-                    foreach ($fields as $field) {
-                        if (in_array($field, $primaryKey)) {
-                            continue;
-                        }
-                        if (isset($keyFields[$field])) {
-                            $fieldData = $schema->column($field);
-                            if (!empty($fieldData['null'])) {
-            %>
-                        echo $this->Form->input('<%= $field %>', ['options' => $<%= $keyFields[$field] %>, 'empty' => true]);
-            <%
-                            } else {
-            %>
-                        echo $this->Form->input('<%= $field %>', ['options' => $<%= $keyFields[$field] %>]);
-            <%
-                            }
-                            continue;
-                        }
-                        if (!in_array($field, ['created', 'modified', 'updated'])) {
-                            $fieldData = $schema->column($field);
-                            if (($fieldData['type'] === 'date') && (!empty($fieldData['null']))) {
-            %>
-                        echo $this->Form->input('<%= $field %>', ['empty' => true]);
-            <%
-                            } else {
-            %>
-                        echo $this->Form->input('<%= $field %>');
-            <%
-                            }
-                        }
-                    }
-                    if (!empty($associations['BelongsToMany'])) {
-                        foreach ($associations['BelongsToMany'] as $assocName => $assocData) {
-            %>
-                        echo $this->Form->input('<%= $assocData['property'] %>._ids', ['options' => $<%= $assocData['variable'] %>]);
-            <%
-                        }
-                    }
-            %>
-                    ?>
-                
-                <?= $this->Form->button(__('Submit')) ?>
-                <?= $this->Form->end() ?>
-
-    </div>
+<h4 class="ui dividing header"><?= __('<%= Inflector::humanize($action) %> <%= $singularHumanName %>') ?></h4>
+<div class="ui stacked segment">
+<?= $this->Flash->render() ?>
+<?= $this->Form->create($<%= $singularVar %>) ?>
+    
+        
+        
+        <?php
+<%
+        foreach ($fields as $field) {
+            if (in_array($field, $primaryKey)) {
+                continue;
+            }
+            if (isset($keyFields[$field])) {
+                $fieldData = $schema->column($field);
+                if (!empty($fieldData['null'])) {
+%>
+            echo $this->Form->input('<%= $field %>', ['options' => $<%= $keyFields[$field] %>, 'empty' => true]);
+<%
+                } else {
+%>
+            echo $this->Form->input('<%= $field %>', ['options' => $<%= $keyFields[$field] %>]);
+<%
+                }
+                continue;
+            }
+            if (!in_array($field, ['created', 'modified', 'updated'])) {
+                $fieldData = $schema->column($field);
+                if (($fieldData['type'] === 'date') && (!empty($fieldData['null']))) {
+%>
+            echo $this->Form->input('<%= $field %>', ['empty' => true]);
+<%
+                } else {
+%>
+            echo $this->Form->input('<%= $field %>');
+<%
+                }
+            }
+        }
+        if (!empty($associations['BelongsToMany'])) {
+            foreach ($associations['BelongsToMany'] as $assocName => $assocData) {
+%>
+            echo $this->Form->input('<%= $assocData['property'] %>._ids', ['options' => $<%= $assocData['variable'] %>]);
+<%
+            }
+        }
+%>
+        ?>
+    
+    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->end() ?>
 </div>
