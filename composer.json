@@ -1,5 +1,5 @@
 {
-    "name": "kadekjayak/SemanticUI",
+    "name": "kadekjayak/semantic-ui",
     "description": "SemanticUI plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
