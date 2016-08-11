@@ -14,14 +14,14 @@
 </head>
 <body>
     <header id="header">
-        <div class="ui secondary menu">
+        <div class="ui inverted menu">
             <div class="ui container">
                 <div class="item">Semantic Ui Theme</div>
             </div>
         </div>
     </header>
 	<div class="page">
-        <div class="ui container">
+        <div class="ui main container">
 		  <?= $this->fetch('content'); ?>
         </div>
 	</div>

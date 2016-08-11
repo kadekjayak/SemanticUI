@@ -55,7 +55,7 @@ $pk = "\$$singularVar->{$primaryKey[0]}";
  %>
  <div class="ui grid">
     <div class="four wide column">
-    	<div class="ui vertical text visible menu">
+    	<div class="ui vertical fluid visible menu">
             <a class="active item"><%= $singularHumanName %></a>
             <?= $this->Html->link(__('New <%= $singularHumanName %>'), ['action' => 'add'], ['class' => 'item']) ?>
             <%
