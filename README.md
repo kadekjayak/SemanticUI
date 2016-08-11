@@ -2,8 +2,13 @@
 This is Semantic UI plugin for CakePhp, it contain Theme for Bake, modified component and Helper.
 
 ## Installation
-Download and extract it into plugin directory on cakephp.
-and load plugin on bootstrap
+Install using composer 
+    
+    composer require kadekjayak/semantic-ui
+
+or Download and extract it into plugin directory on cakephp.
+
+after that you need to load the plugin mannually by addint it into Bootstrap.php
 
 	Plugin::load('SemanticUI', ['bootstrap' => false, 'routes' => true]);
 
