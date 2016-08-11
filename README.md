@@ -8,7 +8,7 @@ Install using composer
 
 or Download and extract it into plugin directory on cakephp.
 
-after that you need to load the plugin mannually by addint it into Bootstrap.php
+after that you need to load the plugin manually by adding it into Bootstrap.php
 
 	Plugin::load('SemanticUI', ['bootstrap' => false, 'routes' => true]);
 
